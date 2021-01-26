@@ -91,6 +91,7 @@ public class CropImageActivity extends AppCompatActivity
               ? mOptions.activityTitle
               : getResources().getString(R.string.crop_image_activity_title);
       actionBar.setTitle(title);
+      actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
       actionBar.setDisplayHomeAsUpEnabled(true);
     }
   }
@@ -189,8 +190,8 @@ public class CropImageActivity extends AppCompatActivity
   @Override
   @SuppressLint("NewApi")
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
     // handle result of pick image chooser
+    super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
       if (resultCode == Activity.RESULT_CANCELED) {
         // User cancelled the picker. We don't have anything to crop
@@ -205,8 +206,8 @@ public class CropImageActivity extends AppCompatActivity
         if (CropImage.isReadExternalStoragePermissionsRequired(this, mCropImageUri)) {
           // request permissions and handle the result in onRequestPermissionsResult()
           requestPermissions(
-              new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
-              CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
+                  new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                  CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
         } else {
           // no permissions required or already grunted, can start crop image activity
           mCropImageView.setImageUriAsync(mCropImageUri);
@@ -218,10 +219,11 @@ public class CropImageActivity extends AppCompatActivity
   @Override
   public void onRequestPermissionsResult(
       int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     if (requestCode == CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE) {
       if (mCropImageUri != null
-          && grantResults.length > 0
-          && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+              && grantResults.length > 0
+              && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
         // required permissions granted, start crop image activity
         mCropImageView.setImageUriAsync(mCropImageUri);
       } else {
